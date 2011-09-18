@@ -41,7 +41,7 @@ The presented USB id is: 1de1:c101
 
 The C110 uses a fairly simple protocol.
 
-Per frame there is:
+Per frame there is a picture with its header:
 
 Header
 ------
@@ -67,5 +67,31 @@ The restrictions are:
 * JFIF standard 1.01
 * 800x480 resolution
 	smaller resolutions work, but will clear the old picture just partially
-	bigger resolutions will hang the device
+	bigger resolutions will crash the device
 * max filesize is about 245000 bytes
+
+
+Special Header
+--------------
+Between any frame can be a special header, which changes the brightness of the device.
+
+maximum:
+	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	+04|00|00|00|00|0c|ff|ff|00|00|00|00|00|00|00|00|00|00|00|00|00|00|00|00+
+	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+high:
+	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	+04|00|00|00|00|0c|ff|ff|00|00|00|00|01|00|00|00|01|00|00|00|00|00|00|00+
+	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+					    --^         --^
+medium:
+	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	+04|00|00|00|00|0c|ff|ff|00|00|00|00|01|00|00|00|00|00|00|00|00|00|00|00+
+	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+					    --^
+low:
+	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	+04|00|00|00|00|0c|ff|ff|00|00|00|00|00|00|00|00|01|00|00|00|00|00|00|00+
+	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+					                --^
+
