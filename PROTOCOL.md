@@ -10,14 +10,14 @@ Mass Storage Mode
 =================
 When plugged in, the C110 registers itself as mass storage device with the following content:
 
-> $ ls -lh
-> total 2.3M
-> -r-xr-xr-x 1 root root 144K 2011-05-05 05:45 AcerDetection.exe
-> -r-xr-xr-x 1 root root 1.2M 2011-06-21 07:27 AcerDisplayPal_Setup.exe
-> -r-xr-xr-x 1 root root   95 2011-03-03 14:57 AcerLaptopCheck.bat
-> -r-xr-xr-x 1 root root  16K 2011-03-03 14:57 AcerLaptopCheck.exe
-> -r-xr-xr-x 1 root root   37 2011-05-06 08:09 autorun.inf
-> -r-xr-xr-x 1 root root 971K 2011-05-20 11:31 C110-EMEA-UG.pdf
+    $ ls -lh
+    total 2.3M
+    -r-xr-xr-x 1 root root 144K 2011-05-05 05:45 AcerDetection.exe
+    -r-xr-xr-x 1 root root 1.2M 2011-06-21 07:27 AcerDisplayPal_Setup.exe
+    -r-xr-xr-x 1 root root   95 2011-03-03 14:57 AcerLaptopCheck.bat
+    -r-xr-xr-x 1 root root  16K 2011-03-03 14:57 AcerLaptopCheck.exe
+    -r-xr-xr-x 1 root root   37 2011-05-06 08:09 autorun.inf
+    -r-xr-xr-x 1 root root 971K 2011-05-20 11:31 C110-EMEA-UG.pdf
 
 Under Windows the user can install this drivers at this point.
 
@@ -47,6 +47,7 @@ Header
 ------
 
 In front of every picture there is a simple 24 byte long header:
+
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	+02|00|00|00|00|10|3e|10|01|00|00|00|20|03|00|00|e0|01|00|00|XX|YY|ZZ|00+
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -54,6 +55,7 @@ In front of every picture there is a simple 24 byte long header:
 Where XXYYZZ represents the size of the following JPEG image. The byte order is little endian.
 
 Example: A JPEG has the size of 59475 bytes which is 0xE853 in hex.
+
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	+02|00|00|00|00|10|3e|10|01|00|00|00|20|03|00|00|e0|01|00|00|53|E8|00|00+
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -76,22 +78,30 @@ Special Header
 Between any frame can be a special header, which changes the brightness of the device.
 
 maximum:
+
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	+04|00|00|00|00|0c|ff|ff|00|00|00|00|00|00|00|00|00|00|00|00|00|00|00|00+
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 high:
+
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	+04|00|00|00|00|0c|ff|ff|00|00|00|00|01|00|00|00|01|00|00|00|00|00|00|00+
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 					    --^         --^
 medium:
+
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	+04|00|00|00|00|0c|ff|ff|00|00|00|00|01|00|00|00|00|00|00|00|00|00|00|00+
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 					    --^
 low:
+
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	+04|00|00|00|00|0c|ff|ff|00|00|00|00|00|00|00|00|01|00|00|00|00|00|00|00+
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 					                --^
 
