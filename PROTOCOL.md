@@ -39,14 +39,12 @@ Under Linux we can achieve this with the following command (usb_modeswitch requi
 
 The presented USB id is: 1de1:c101
 
-The C110 uses a fairly simple protocol.
+The C110 uses a fairly simple protocol. Per frame there is a picture with its 24 bytes long header, which we call widget.
 
-Per frame there is a picture with its header:
-
-Header
+Header/Widget
 ------
 
-In front of every picture there is a simple 24 byte long header:
+In front of every picture there is a simple 24 byte long widget:
 
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	+02|00|00|00|00|10|3e|10|01|00|00|00|20|03|00|00|e0|01|00|00|XX|YY|ZZ|00+
@@ -62,7 +60,7 @@ Example: A JPEG has the size of 59475 bytes which is 0xE853 in hex.
 
 Payload/Picture
 ---------------
-Right after the header the JPEG encoded picture follows. 
+Right after the widget the JPEG encoded picture follows. 
 
 The restrictions are:
 
@@ -75,7 +73,7 @@ The restrictions are:
 
 Special Header
 --------------
-Between any frame can be a special header, which changes the brightness of the device.
+Between any frame can be a special widget, which changes the brightness of the device.
 
 maximum:
 
