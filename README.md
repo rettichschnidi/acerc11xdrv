@@ -12,6 +12,6 @@ Requirements
 
 * libusb-1.0
 * libjpeg
-* boost
+* boost 1.44+
 * CMake 2.8
 * Doxygen (optional, to generate the documentation)

@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <cassert>
 
+#define BOOST_FILESYSTEM_VERSION 3
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 

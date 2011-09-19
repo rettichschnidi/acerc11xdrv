@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-FIND_PACKAGE(Boost REQUIRED filesystem program_options)
+FIND_PACKAGE(Boost 1.44 REQUIRED filesystem program_options)
 FIND_PACKAGE(LIBUSB REQUIRED)
 
 # Files which are shared by many executables
