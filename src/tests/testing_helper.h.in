@@ -1,0 +1,10 @@
+/**
+ * @file testing_helper.h.in
+ */
+#ifndef TESTING_HELPER_H_
+#define TESTING_HELPER_H_
+
+#define PROJECT_BINARY_DIR "@PROJECT_BINARY_DIR@"
+#define PROJECT_SOURCE_DIR "@PROJECT_SOURCE_DIR@"
+
+#endif /* TESTING_HELPER_H_ */
