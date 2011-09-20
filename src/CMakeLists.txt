@@ -36,7 +36,7 @@ OPTION(ACERC11XDRV_CREATEBRIGHTNESSWIDGET "A tool to create widgets for pictures
 IF(ACERC11XDRV_CREATEBRIGHTNESSWIDGET)
 	ADD_EXECUTABLE(createbrightnesswidget createbrightnesswidget.cpp)
 	SET(EXECUTABLES ${EXECUTABLES} createbrightnesswidget)
-	TARGET_LINK_LIBRARIES(createbrightnesswidget corelib ${Boost_LIBRARIES})
+	TARGET_LINK_LIBRARIES(createbrightnesswidget corelib)
 ENDIF()
 
 OPTION(ACERC11XDRV_SHOWPIC "A simple tool to put a picture on the C110" OFF)
@@ -44,7 +44,7 @@ IF(ACERC11XDRV_SHOWPIC)
 	MESSAGE(FATAL_ERROR "Not yet here")
 	ADD_EXECUTABLE(showpic howpic.cpp)
 	SET(EXECUTABLES ${EXECUTABLES} showpic)
-	TARGET_LINK_LIBRARIES(showpic corelib ${CORE_LIBS})
+	TARGET_LINK_LIBRARIES(showpic corelib )
 ENDIF()
 
 #include the test directory
