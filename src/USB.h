@@ -16,8 +16,6 @@
 
 #include <libusb-1.0/libusb.h>
 
-#ifdef I_KNOW_THIS_IS_UNTESTED_CODE
-
 namespace DANGER_ZONE {
 
 	class Device;
@@ -701,7 +699,5 @@ namespace DANGER_ZONE {
 	};
 
 }
-#endif /* I_KNOW_THIS_IS_UNTESTED_CODE */
-
 #endif /* USB_H_ */
 

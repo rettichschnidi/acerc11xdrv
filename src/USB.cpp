@@ -17,10 +17,7 @@
 
 #include <libusb-1.0/libusb.h>
 
-#define I_KNOW_THIS_IS_UNTESTED_CODE
 #include "USB.h"
-
-#ifdef I_KNOW_THIS_IS_UNTESTED_CODE
 
 namespace DANGER_ZONE {
 
@@ -79,7 +76,7 @@ namespace DANGER_ZONE {
 		return match_list;
 	}
 
-	Device::Device(libusb_device *device) {
+	Device::Device(libusb_device *device) : m_handle(NULL){
 		int r = libusb_get_device_descriptor(device, &m_descriptor);
 		if (r < 0) {
 			assert(false);
@@ -252,6 +249,7 @@ namespace DANGER_ZONE {
 	Interface::Interface(libusb_interface interface, u_int8_t number, Device * device) {
 		m_numAltSettings = interface.num_altsetting;
 		m_interfaceNumber = number;
+		m_parent = device;
 		for (int i = 0; i < m_numAltSettings; i++) {
 			push_back(new AltSetting(interface.altsetting[i], device));
 		}
@@ -398,5 +396,3 @@ namespace DANGER_ZONE {
 		return m_product;
 	}
 }
-
-#endif /* I_KNOW_THIS_IS_UNTESTED_CODE */
