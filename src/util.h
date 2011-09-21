@@ -2,6 +2,9 @@
  * @file util.h
  */
 
+#ifndef UTIL_H_
+#define UTIL_H_
+
 #include <stdint.h>
 #include <string>
 #include <iostream>
@@ -16,3 +19,5 @@ namespace acerc11xdrv {
 		void writeDataToFile(Data &data, std::ostream & os);
 	}
 }
+
+#endif /* UTIL_H_ */
