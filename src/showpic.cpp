@@ -16,7 +16,9 @@ using namespace DANGER_ZONE;
 int main(int argc, char **argv) {
 
 	USB usb;
-	DeviceID devID(0x1de1, 0xc101);
+	uint16_t vendor = 0x0483;
+	uint16_t product = 0x2016;
+	DeviceID devID(vendor, product);
 	DeviceIDList devIdList;
 	devIdList.push_back(devID);
 	std::list<Device *> devlist = usb.match(devIdList);
@@ -37,7 +39,6 @@ int main(int argc, char **argv) {
 	}
 
 	Endpoint *endPoint = altsetting->firstEndpoint();
-	endPoint++;
 
 	if (argc != 2) {
 		cout << "Usage: USB-LIBUSB INPUTFILE" << endl;

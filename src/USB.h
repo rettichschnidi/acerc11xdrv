@@ -689,6 +689,7 @@ namespace DANGER_ZONE {
 		std::list<Device *> match(DeviceIDList);
 
 		private:
+		libusb_device **devices;
 		std::list<Device *>::const_iterator iter;
 		libusb_context *ctx;
 	};
