@@ -18,7 +18,7 @@
 
 #ifdef I_KNOW_THIS_IS_UNTESTED_CODE
 
-namespace DANGEROUS_ZONE_WITHIN_USBPP {
+namespace DANGER_ZONE {
 
 	class Device;
 
@@ -83,7 +83,7 @@ namespace DANGEROUS_ZONE_WITHIN_USBPP {
 		 *
 		 * It is mostly useful for debugging.
 		 */
-		void dumpDescriptor(void);
+		void dumpDescriptor(void) const;
 
 		private:
 		libusb_endpoint_descriptor m_endpoint_descriptor;

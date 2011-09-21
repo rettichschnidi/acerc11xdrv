@@ -11,16 +11,38 @@
 #include "USB.h"
 
 using namespace std;
-using namespace DANGEROUS_ZONE_WITHIN_USBPP;
+using namespace DANGER_ZONE;
 
 int main(int argc, char **argv) {
 
 	USB usb;
+	DeviceID devID(0x1de1, 0xc101);
+	DeviceIDList devIdList;
+	devIdList.push_back(devID);
+	std::list<Device *> devlist = usb.match(devIdList);
+	cout << "devlist.size(): " << devlist.size() << endl;
+	cout << "usb.size(): " << usb.size() << endl;
 
-//	if (argc != 2) {
-//		cout << "Usage: USB-LIBUSB INPUTFILE" << endl;
-//		return 1;
-//	}
+	Device * dev = devlist.front();
+	cout << "dev->numConfigurations(): " << (int)dev->numConfigurations() << endl;
+	Configuration *config = dev->firstConfiguration();
+	cout << "config->numInterfaces(): " << (int)config->numInterfaces() << endl;
+	Interface *interface = config->firstInterface();
+	cout << "interface->numAltSettings(): " << (int)interface->numAltSettings() << endl;
+	AltSetting *altsetting = interface->firstAltSetting();
+	cout << "altsetting->numEndpoints(): " << (int)altsetting->numEndpoints() << endl;
+	for(AltSetting::const_iterator acsIter = altsetting->begin(); acsIter != altsetting->end(); acsIter++) {
+		cout << "Endpoint: " << endl;
+		(*acsIter)->dumpDescriptor();
+	}
+
+	Endpoint *endPoint = altsetting->firstEndpoint();
+	endPoint++;
+
+	if (argc != 2) {
+		cout << "Usage: USB-LIBUSB INPUTFILE" << endl;
+		return 1;
+	}
 //	libusb_device **devices;
 //	libusb_context *ctx = NULL;
 //	int ret = 0;
@@ -41,18 +63,36 @@ int main(int argc, char **argv) {
 //	else
 //		cout << "Device Opened" << endl;
 //	libusb_free_device_list(devices, 1); //free the list, unref the devices in it
-//
-//
-//	ifstream payload(argv[1], ios::binary);
-//
-//	payload.seekg(0, ios::end);
-//	int playload_size = payload.tellg();
-//	payload.seekg(0, ios::beg);
-//	char *payload_data = new char[playload_size];
-//
-//	payload.read(payload_data, playload_size);
-//	assert(payload.gcount() == playload_size);
-//
+
+
+	ifstream payload(argv[1], ios::binary);
+
+	payload.seekg(0, ios::end);
+	int payload_size = payload.tellg();
+	payload.seekg(0, ios::beg);
+	char *payload_data = new char[payload_size];
+
+	payload.read(payload_data, payload_size);
+	assert(payload.gcount() == payload_size);
+
+	int r = interface->claim();
+	if(r) {
+		cout << "Failed to claim interface: " << r << endl;
+	}
+
+	int wrote;
+	r = endPoint->bulkWrite((unsigned char*)payload_data, payload_size, wrote);
+
+	if(r) {
+		cout << "Could not write data" << endl;
+	} else if (wrote != payload_size)
+		cout << "Error while writing PAYLOAD: Actual = " << wrote << endl;
+	else {
+		cout << "Writing PAYLOAD was successfully!" << endl;
+	}
+	interface->release();
+
+
 //	int actual; //used to find out how many bytes were written
 //	if (libusb_kernel_driver_active(dev_handle, 0) == 1) { //find out if kernel driver is attached
 //		cout << "Kernel Driver Active" << endl;

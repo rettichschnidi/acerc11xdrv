@@ -22,7 +22,7 @@
 
 #ifdef I_KNOW_THIS_IS_UNTESTED_CODE
 
-namespace DANGEROUS_ZONE_WITHIN_USBPP {
+namespace DANGER_ZONE {
 
 	USB::USB(void) :
 		ctx(NULL) {
@@ -69,10 +69,9 @@ namespace DANGEROUS_ZONE_WITHIN_USBPP {
 
 		for (diter = begin(); diter != end(); diter++) {
 			DeviceIDList::const_iterator deviceIdIterator;
-			for (deviceIdIterator = devList.begin(); deviceIdIterator
-					!= devList.end(); deviceIdIterator++) {
-				if ((deviceIdIterator->product() == (*diter)->idProduct())
-						&& (deviceIdIterator->vendor() == (*diter)->idVendor())) {
+			for (deviceIdIterator = devList.begin(); deviceIdIterator != devList.end(); deviceIdIterator++) {
+				if ((deviceIdIterator->product() == (*diter)->idProduct()) && (deviceIdIterator->vendor()
+						== (*diter)->idVendor())) {
 					match_list.push_back(*diter);
 				}
 			}
@@ -110,8 +109,7 @@ namespace DANGEROUS_ZONE_WITHIN_USBPP {
 
 		if (0 == langID) {
 			/* we want the first lang ID available, so find out what it is */
-			retval = libusb_get_string_descriptor(m_handle, 0, 0, tmpBuff,
-					sizeof(tmpBuff));
+			retval = libusb_get_string_descriptor(m_handle, 0, 0, tmpBuff, sizeof(tmpBuff));
 			if (retval < 0)
 				return retval;
 
@@ -121,8 +119,7 @@ namespace DANGEROUS_ZONE_WITHIN_USBPP {
 			langID = tmpBuff[2] | (tmpBuff[3] << 8);
 		}
 
-		retval = libusb_get_string_descriptor(m_handle, index, langID, tmpBuff,
-				sizeof(tmpBuff));
+		retval = libusb_get_string_descriptor(m_handle, index, langID, tmpBuff, sizeof(tmpBuff));
 
 		if (retval < 0)
 			return retval;
@@ -198,11 +195,9 @@ namespace DANGEROUS_ZONE_WITHIN_USBPP {
 		return back();
 	}
 
-	int Device::controlTransfer(u_int8_t requestType, u_int8_t request,
-			u_int16_t value, u_int16_t index, u_int16_t length,
-			unsigned char *payload, int timeout) {
-		return libusb_control_transfer(m_handle, requestType, request, value,
-				index, payload, length, timeout);
+	int Device::controlTransfer(u_int8_t requestType, u_int8_t request, u_int16_t value, u_int16_t index,
+			u_int16_t length, unsigned char *payload, int timeout) {
+		return libusb_control_transfer(m_handle, requestType, request, value, index, payload, length, timeout);
 	}
 
 	Configuration::Configuration() :
@@ -214,12 +209,10 @@ namespace DANGEROUS_ZONE_WITHIN_USBPP {
 			libusb_free_config_descriptor(m_config_descriptor);
 	}
 
-	Configuration::Configuration(libusb_config_descriptor *config_descriptor,
-			Device * device) {
+	Configuration::Configuration(libusb_config_descriptor *config_descriptor, Device * device) {
 		m_config_descriptor = config_descriptor;
 		for (uint8_t i = 0; i < m_config_descriptor->bNumInterfaces; i++) {
-			push_back(
-					new Interface(m_config_descriptor->interface[i], i, device));
+			push_back(new Interface(m_config_descriptor->interface[i], i, device));
 		}
 	}
 
@@ -228,16 +221,11 @@ namespace DANGEROUS_ZONE_WITHIN_USBPP {
 	}
 
 	void Configuration::dumpDescriptor(void) {
-		printf("  wTotalLength:         %d\n",
-				m_config_descriptor->wTotalLength);
-		printf("  bNumInterfaces:       %d\n",
-				m_config_descriptor->bNumInterfaces);
-		printf("  bConfigurationValue:  %d\n",
-				m_config_descriptor->bConfigurationValue);
-		printf("  iConfiguration:       %d\n",
-				m_config_descriptor->iConfiguration);
-		printf("  bmAttributes:         %02xh\n",
-				m_config_descriptor->bmAttributes);
+		printf("  wTotalLength:         %d\n", m_config_descriptor->wTotalLength);
+		printf("  bNumInterfaces:       %d\n", m_config_descriptor->bNumInterfaces);
+		printf("  bConfigurationValue:  %d\n", m_config_descriptor->bConfigurationValue);
+		printf("  iConfiguration:       %d\n", m_config_descriptor->iConfiguration);
+		printf("  bmAttributes:         %02xh\n", m_config_descriptor->bmAttributes);
 		printf("  MaxPower:             %d\n", m_config_descriptor->MaxPower);
 	}
 
@@ -261,8 +249,7 @@ namespace DANGEROUS_ZONE_WITHIN_USBPP {
 		m_numAltSettings(0), m_interfaceNumber(0) {
 	}
 
-	Interface::Interface(libusb_interface interface, u_int8_t number,
-			Device * device) {
+	Interface::Interface(libusb_interface interface, u_int8_t number, Device * device) {
 		m_numAltSettings = interface.num_altsetting;
 		m_interfaceNumber = number;
 		for (int i = 0; i < m_numAltSettings; i++) {
@@ -283,8 +270,7 @@ namespace DANGEROUS_ZONE_WITHIN_USBPP {
 	}
 
 	int Interface::setAltSetting(int altSettingNumber) {
-		return libusb_set_interface_alt_setting(m_parent->handle(),
-				m_interfaceNumber, altSettingNumber);
+		return libusb_set_interface_alt_setting(m_parent->handle(), m_interfaceNumber, altSettingNumber);
 	}
 
 	u_int8_t Interface::numAltSettings(void) {
@@ -310,30 +296,21 @@ namespace DANGEROUS_ZONE_WITHIN_USBPP {
 	AltSetting::AltSetting() {
 	}
 	;
-	AltSetting::AltSetting(libusb_interface_descriptor descriptor,
-			Device * device) {
+	AltSetting::AltSetting(libusb_interface_descriptor descriptor, Device * device) {
 		m_interface_descriptor = descriptor;
 		for (uint8_t i = 0; i < m_interface_descriptor.bNumEndpoints; i++) {
-			push_back(
-					new Endpoint(m_interface_descriptor.endpoint[i], i, device));
+			push_back(new Endpoint(m_interface_descriptor.endpoint[i], i, device));
 		}
 	}
 
 	void AltSetting::dumpDescriptor(void) {
-		printf("    bInterfaceNumber:   %d\n",
-				m_interface_descriptor.bInterfaceNumber);
-		printf("    bAlternateSetting:  %d\n",
-				m_interface_descriptor.bAlternateSetting);
-		printf("    bNumEndpoints:      %d\n",
-				m_interface_descriptor.bNumEndpoints);
-		printf("    bInterfaceClass:    %d\n",
-				m_interface_descriptor.bInterfaceClass);
-		printf("    bInterfaceSubClass: %d\n",
-				m_interface_descriptor.bInterfaceSubClass);
-		printf("    bInterfaceProtocol: %d\n",
-				m_interface_descriptor.bInterfaceProtocol);
-		printf("    iInterface:         %d\n",
-				m_interface_descriptor.iInterface);
+		printf("    bInterfaceNumber:   %d\n", m_interface_descriptor.bInterfaceNumber);
+		printf("    bAlternateSetting:  %d\n", m_interface_descriptor.bAlternateSetting);
+		printf("    bNumEndpoints:      %d\n", m_interface_descriptor.bNumEndpoints);
+		printf("    bInterfaceClass:    %d\n", m_interface_descriptor.bInterfaceClass);
+		printf("    bInterfaceSubClass: %d\n", m_interface_descriptor.bInterfaceSubClass);
+		printf("    bInterfaceProtocol: %d\n", m_interface_descriptor.bInterfaceProtocol);
+		printf("    iInterface:         %d\n", m_interface_descriptor.iInterface);
 	}
 
 	Endpoint *AltSetting::firstEndpoint(void) {
@@ -360,17 +337,14 @@ namespace DANGEROUS_ZONE_WITHIN_USBPP {
 
 	}
 
-	Endpoint::Endpoint(libusb_endpoint_descriptor endpoint_descriptor,
-			uint8_t number, Device* parent) {
+	Endpoint::Endpoint(libusb_endpoint_descriptor endpoint_descriptor, uint8_t number, Device* parent) {
 		m_endpoint_descriptor = endpoint_descriptor;
 		m_parent = parent;
 		m_number = number;
 	}
 
-	int Endpoint::bulkWrite(unsigned char *message, int size, int &wrote,
-			int timeout) {
-		int ret = libusb_bulk_transfer(m_parent->handle(),
-				(m_number | LIBUSB_ENDPOINT_OUT), message, size, &wrote,
+	int Endpoint::bulkWrite(unsigned char *message, int size, int &wrote, int timeout) {
+		int ret = libusb_bulk_transfer(m_parent->handle(), (m_number | LIBUSB_ENDPOINT_OUT), message, size, &wrote,
 				timeout);
 		if (ret) {
 			return ret;
@@ -380,14 +354,12 @@ namespace DANGEROUS_ZONE_WITHIN_USBPP {
 		return 0;
 	}
 
-	int Endpoint::bulkRead(int length, unsigned char *message, int size,
-			int &read, int timeout) {
+	int Endpoint::bulkRead(int length, unsigned char *message, int size, int &read, int timeout) {
 		unsigned char *buf;
 		int res;
 
 		buf = (unsigned char *) malloc(length);
-		res = libusb_bulk_transfer(m_parent->handle(),
-				(m_number | LIBUSB_ENDPOINT_IN), buf, length, &read, timeout);
+		res = libusb_bulk_transfer(m_parent->handle(), (m_number | LIBUSB_ENDPOINT_IN), buf, length, &read, timeout);
 
 		if (res > 0) {
 			assert(false);
@@ -404,17 +376,13 @@ namespace DANGEROUS_ZONE_WITHIN_USBPP {
 		return libusb_clear_halt(m_parent->handle(), m_number);
 	}
 
-	void Endpoint::dumpDescriptor(void) {
-		printf("      bEndpointAddress: %02xh\n",
-				m_endpoint_descriptor.bEndpointAddress);
-		printf("      bmAttributes:     %02xh\n",
-				m_endpoint_descriptor.bmAttributes);
-		printf("      wMaxPacketSize:   %d\n",
-				m_endpoint_descriptor.wMaxPacketSize);
+	void Endpoint::dumpDescriptor(void) const {
+		printf("      bEndpointAddress: %02xh\n", m_endpoint_descriptor.bEndpointAddress);
+		printf("      bmAttributes:     %02xh\n", m_endpoint_descriptor.bmAttributes);
+		printf("      wMaxPacketSize:   %d\n", m_endpoint_descriptor.wMaxPacketSize);
 		printf("      bInterval:        %d\n", m_endpoint_descriptor.bInterval);
 		printf("      bRefresh:         %d\n", m_endpoint_descriptor.bRefresh);
-		printf("      bSynchAddress:    %d\n",
-				m_endpoint_descriptor.bSynchAddress);
+		printf("      bSynchAddress:    %d\n", m_endpoint_descriptor.bSynchAddress);
 	}
 
 	DeviceID::DeviceID(u_int16_t vendor, u_int16_t product) {
