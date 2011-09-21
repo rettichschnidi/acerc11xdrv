@@ -4,6 +4,11 @@ PROJECT(acerc11xdrv)
 #Set the version of acerc11xdrv
 set(VERSION 0.0.1)
 
+#Exit if someone tries to contaminates the source directory with an in-source build
+if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+	message (FATAL_ERROR "Please do out-of-source builds.\nTo cleanup: \"rm -rf CMake CMakeCache.txt  CMakeFiles/\"")
+endif()
+
 #include our own FindXY.cmake files
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules/")
 
