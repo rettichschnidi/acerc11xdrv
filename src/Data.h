@@ -15,16 +15,21 @@ namespace acerc11xdrv {
 	 */
 	class Data {
 		public:
-			typedef std::vector<char> type_t;
-			typedef type_t::size_type size_type;
-
 			Data();
-			size_type getSize() const;
-			char * getDataAsCharArray() const;
+			virtual size_t getSize() const=0;
+			virtual char * getDataAsCharArray() const=0;
 			virtual ~Data()=0;
-		protected:
-			type_t data;
+	};
 
+	/**
+	 * Abstract class to store all kind of pictures (JPEG, RAW/XLIB)
+	 */
+	class PictureData: public Data {
+		public:
+			unsigned int getHeight() const=0;
+			unsigned int getWidth() const=0;
+
+			virtual ~PictureData()=0;
 	};
 
 	/**
@@ -32,10 +37,17 @@ namespace acerc11xdrv {
 	 */
 	class WidgetData: public Data {
 		public:
+			typedef std::vector<char> type_t;
+			typedef type_t::size_type size_type;
+
 			WidgetData();
 			virtual ~WidgetData();
+			virtual size_t getSize() const;
+			virtual char * getDataAsCharArray() const;
 		private:
 			virtual void init()=0;
+		protected:
+			type_t data;
 	};
 
 	/**
@@ -64,7 +76,6 @@ namespace acerc11xdrv {
 			void setBrightness(const Brightness &brightness);
 	};
 
-	std::istream& operator>>(std::istream& in,
-			BrightnessWidgetData::Brightness& brightness);
+	std::istream& operator>>(std::istream& in, BrightnessWidgetData::Brightness& brightness);
 }
 #endif /* DATA_H_ */

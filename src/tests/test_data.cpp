@@ -14,16 +14,19 @@
 
 using namespace acerc11xdrv;
 
-class TestableData: public Data {
+class TestableWidgetData: public WidgetData {
 	public:
 		void addData(char c) {
 			data.push_back(c);
 		}
+		void init() {
+			// dummy
+		};
 };
 
-void test_Data() {
+void test_WidgetData() {
 	char *teststring = (char*) "abc";
-	TestableData d;
+	TestableWidgetData d;
 
 	//test getSize
 	ASSERT_EQUALM("Data object has size of 0 after default construction", 0, d.getSize());
@@ -129,7 +132,7 @@ void test_BrightnessWidgetData() {
 
 void runSuite() {
 	cute::suite s;
-	s.push_back(CUTE(test_Data));
+	s.push_back(CUTE(test_WidgetData));
 	s.push_back(CUTE(test_PictureWidgetData));
 	s.push_back(CUTE(test_BrightnessWidgetData));
 	cute::ide_listener lis;

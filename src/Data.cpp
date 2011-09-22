@@ -31,7 +31,7 @@ namespace acerc11xdrv {
 	/**
 	 * @return Size of the data in bytes
 	 */
-	Data::size_type Data::getSize() const {
+	size_t WidgetData::getSize() const {
 		return data.size();
 	}
 
@@ -41,7 +41,7 @@ namespace acerc11xdrv {
 	 * @note Caller has to delete the array
 	 * @return A copy of the data as char-pointer array
 	 */
-	char * Data::getDataAsCharArray() const {
+	char * WidgetData::getDataAsCharArray() const {
 		size_type size = data.size();
 		char *c = new char[size];
 		for (size_type i = 0; i < size; i++) {
