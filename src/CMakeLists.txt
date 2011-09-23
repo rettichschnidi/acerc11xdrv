@@ -41,9 +41,11 @@ ENDIF()
 
 OPTION(ACERC11XDRV_SHOWPIC "A simple tool to put a picture on the C110" ON)
 IF(ACERC11XDRV_SHOWPIC)
-	ADD_EXECUTABLE(showpic showpic.cpp USB.cpp)
+	FIND_PACKAGE(ImageMagick REQUIRED COMPONENTS Magick++)
+	ADD_EXECUTABLE(showpic showpic.cpp USB.cpp ImageMagickData.cpp)
 	SET(EXECUTABLES ${EXECUTABLES} showpic)
-	TARGET_LINK_LIBRARIES(showpic corelib )
+	INCLUDE_DIRECTORIES(${ImageMagick_INCLUDE_DIRS})
+	TARGET_LINK_LIBRARIES(showpic corelib ${ImageMagick_LIBRARIES})
 ENDIF()
 
 #include the test directory

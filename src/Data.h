@@ -24,12 +24,13 @@ namespace acerc11xdrv {
 	/**
 	 * Abstract class to store all kind of pictures (JPEG, RAW/XLIB)
 	 */
-	class PictureData: public Data {
+	class ImageData: public Data {
 		public:
-			unsigned int getHeight() const=0;
-			unsigned int getWidth() const=0;
-
-			virtual ~PictureData()=0;
+			virtual unsigned int getHeight() const =0;
+			virtual unsigned int getWidth() const =0;
+			virtual size_t getSize() const=0;
+			virtual char * getDataAsCharArray() const=0;
+			virtual ~ImageData()=0;
 	};
 
 	/**
