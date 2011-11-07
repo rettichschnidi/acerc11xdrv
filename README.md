@@ -15,3 +15,11 @@ Requirements
 * boost 1.44+
 * CMake 2.8
 * Doxygen (optional, to generate the documentation)
+
+Todo
+====
+
+* performance has to improve
+* should work with other resolutions than 24bpp
+* a GUI would be nice
+* ...
