@@ -14,7 +14,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules/
 
 OPTION(DEBUG "Build a debug version" ON)
 IF(DEBUG)
-	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3 -ggdb")
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3 -ggdb -pg")
 ELSE()
 	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O6 -s -fomit-frame-pointer -Wno-deprecated" )
 ENDIF()
@@ -26,7 +26,7 @@ ENDIF()
 
 OPTION(PRINT_ALL_WARNINGS "Show all compiler warnings" ON)
 IF(PRINT_ALL_WARNINGS)
-	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 ENDIF()
 
 #Place all executables in bin/, libraries in /lib
@@ -48,8 +48,8 @@ SET(CMAKE_VERBOSE_MAKEFILE ON)
 
 OPTION(ENABLE_TEST "Enable the make-target \"test\"" ON)
 IF(ENABLE_TEST)
-    INCLUDE(CTest)
-    ENABLE_TESTING()
+	INCLUDE(CTest)
+	ENABLE_TESTING()
 ENDIF()
 
 #include the source code directory
@@ -58,10 +58,10 @@ ADD_SUBDIRECTORY(src)
 #Allows to build the doxygen documentation via "make doc"
 OPTION (ENABLE_DOC "Enable \"make doc\" to build the doxygen documentation" ON)
 IF(ENABLE_DOC)
-        SET(DOXYGEN_FIND_REQUIRED true)
-        FIND_PACKAGE(Doxygen)
-        IF (NOT DOXYGEN_FOUND)
-                MESSAGE(FATAL_ERROR "You neeed Doxygen in order to generate the documentation")
-        ENDIF()
-        ADD_SUBDIRECTORY(doc)
+	SET(DOXYGEN_FIND_REQUIRED true)
+	FIND_PACKAGE(Doxygen)
+	IF (NOT DOXYGEN_FOUND)
+		MESSAGE(FATAL_ERROR "You neeed Doxygen in order to generate the documentation")
+	ENDIF()
+	ADD_SUBDIRECTORY(doc)
 ENDIF()

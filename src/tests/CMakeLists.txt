@@ -27,9 +27,9 @@ ENDFOREACH()
 #Ever program should have a help parameter
 FOREACH(EXECUTABLE ${EXECUTABLES})
     ADD_TEST("${EXECUTABLE}:help_available" ${PROJECT_BINARY_DIR}/bin/${EXECUTABLE} "--help")
-    SET_TESTS_PROPERTIES("${EXECUTABLE}:help_available" PROPERTIES PASS_REGULAR_EXPRESSION "Shows this information")
+    SET_TESTS_PROPERTIES("${EXECUTABLE}:help_available" PROPERTIES PASS_REGULAR_EXPRESSION "Shows this information" TIMEOUT 5)
     ADD_TEST("${EXECUTABLE}:help_shows_up_if_no_parameter" ${PROJECT_BINARY_DIR}/bin/${EXECUTABLE})
-    SET_TESTS_PROPERTIES("${EXECUTABLE}:help_shows_up_if_no_parameter" PROPERTIES PASS_REGULAR_EXPRESSION "Shows this information")
+    SET_TESTS_PROPERTIES("${EXECUTABLE}:help_shows_up_if_no_parameter" PROPERTIES PASS_REGULAR_EXPRESSION "Shows this information" TIMEOUT 5)
 ENDFOREACH()
 
 IF(ACERC11XDRV_CREATEPICTUREWIDGET)
