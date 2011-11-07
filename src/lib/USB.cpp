@@ -6,8 +6,11 @@
  * with Universal Serial Bus (USB) devices attached to the
  * system.
  *
- * \author Brad Hards, adapted for libusb-1.0: Reto Schneider
+ * @author Brad Hards, adapted for libusb-1.0: Reto Schneider
  */
+
+#include "USB.h"
+
 #include <errno.h>
 #include <cstdlib>
 #include <stdio.h>
@@ -17,16 +20,13 @@
 
 #include <libusb-1.0/libusb.h>
 
-#include "USB.h"
-
 namespace DANGER_ZONE {
 
 	USB::USB(void) :
 		ctx(NULL) {
 		int r = libusb_init(&ctx);
 		if (r < 0) {
-			Error e;
-			throw e;
+			throw USBError("Could not init USB");
 		}
 		rescan();
 	}
@@ -78,18 +78,18 @@ namespace DANGER_ZONE {
 		m_handle(NULL) {
 		int r = libusb_get_device_descriptor(device, &m_descriptor);
 		if (r < 0) {
-			assert(false);
+			throw USBError("Could not get device descriptor");
 		}
 		r = libusb_open(device, &m_handle);
 		if (r < 0) {
-			assert(false);
+			throw USBError("Could not open device");
 		}
 
 		for (u_int8_t i = 0; i < numConfigurations(); i++) {
 			libusb_config_descriptor *config_descriptor;
 			r = libusb_get_config_descriptor(device, i, &config_descriptor);
 			if (r < 0) {
-				assert(false);
+				throw USBError("Could not open config descriptor");
 			}
 			push_back(new Configuration(config_descriptor, this));
 		}
@@ -99,13 +99,14 @@ namespace DANGER_ZONE {
 		libusb_close(m_handle);
 	}
 
-	int Device::string(std::string &buf, int index, u_int16_t langID) {
+	int Device::string(std::string &buf, int index, u_int16_t langID) { // FIXME: update the buf
 		int retval;
 		unsigned char tmpBuff[256];
 
 		if (0 == langID) {
 			/* we want the first lang ID available, so find out what it is */
 			retval = libusb_get_string_descriptor(m_handle, 0, 0, tmpBuff, sizeof(tmpBuff));
+			buf = std::string((const char*)tmpBuff);
 			if (retval < 0)
 				return retval;
 
@@ -116,6 +117,7 @@ namespace DANGER_ZONE {
 		}
 
 		retval = libusb_get_string_descriptor(m_handle, index, langID, tmpBuff, sizeof(tmpBuff));
+		buf = std::string((const char*)tmpBuff);
 
 		if (retval < 0)
 			return retval;
@@ -348,26 +350,20 @@ namespace DANGER_ZONE {
 		m_number = number;
 	}
 
-	int Endpoint::bulkWrite(unsigned char *message, int size, int &wrote, int timeout) {
+	int Endpoint::bulkWrite(unsigned char *message, int size, int &wrote, unsigned int timeout) {
 		int ret = libusb_bulk_transfer(m_parent->handle(), (m_number | LIBUSB_ENDPOINT_OUT), message, size, &wrote,
 				timeout);
-		if (ret) {
-			return ret;
-		} else if (wrote != size) {
-			assert(false);
-		}
-		return 0;
+		return ret;
 	}
 
-	int Endpoint::bulkRead(int length, unsigned char *message, int size, int &read, int timeout) {
-		unsigned char *buf;
+	int Endpoint::bulkRead(unsigned int length, unsigned char *message, int &read, int timeout) { // FIXME: what about size?
 		int res;
 
-		buf = (unsigned char *) malloc(length);
-		res = libusb_bulk_transfer(m_parent->handle(), (m_number | LIBUSB_ENDPOINT_IN), buf, length, &read, timeout);
+		assert(length <= sizeof(message));
+		res = libusb_bulk_transfer(m_parent->handle(), (m_number | LIBUSB_ENDPOINT_IN), message, length, &read, timeout);
 
 		if (res > 0) {
-			assert(false);
+			assert(false); // FIXME: errorhandling missing
 		}
 
 		return res;
@@ -379,6 +375,10 @@ namespace DANGER_ZONE {
 
 	int Endpoint::clearHalt(void) {
 		return libusb_clear_halt(m_parent->handle(), m_number);
+	}
+
+	const libusb_endpoint_descriptor& Endpoint::endpointDescriptor() {
+		return m_endpoint_descriptor;
 	}
 
 	void Endpoint::dumpDescriptor(void) const {
@@ -401,5 +401,24 @@ namespace DANGER_ZONE {
 
 	u_int16_t DeviceID::product(void) const {
 		return m_product;
+	}
+
+	USBError::USBError(const char *message) :
+		message(NULL) {
+		unsigned int len(strnlen(message, 1024));
+		this->message = new char[len+1];
+		this->message[len] = '\0';
+		memcpy(this->message, message, len);
+	}
+
+	const char* USBError::what() const throw(){
+		return message;
+	}
+
+	USBError::~USBError() throw() {
+		if (message != NULL) {
+			delete message;
+			message = NULL;
+		}
 	}
 }

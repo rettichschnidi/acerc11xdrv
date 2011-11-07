@@ -6,13 +6,15 @@
  * with Universal Serial Bus (USB) devices attached to the
  * system.
  *
- * \author Brad Hards, adapted for libusb-1.0: Reto Schneider
+ * @author Brad Hards, adapted for libusb-1.0: Reto Schneider
  */
 #ifndef USB_H_
 #define USB_H_
 
 #include <string>
 #include <list>
+#include <cstring>
+#include <stdexcept>
 
 #include <libusb-1.0/libusb.h>
 
@@ -37,27 +39,29 @@ namespace DANGER_ZONE {
 		 *
 		 * This method performs a bulk transfer to the endpoint.
 		 *
-		 * \param message is the message to be sent.
-		 * \param timeout is the USB transaction timeout in milliseconds
+		 * @param message is the message to be sent.
+		 * @param size is the number of bytes to be sent
+		 * @param wrote will be updated with the sent bytes
+		 * @param timeout is the USB transaction timeout in milliseconds
 		 *
-		 * \returns the number of bytes sent, or a negative value on
-		 * failure
+		 * @return 0 on success, anything else marks an error
 		 */
-		int bulkWrite(unsigned char *message, int size, int &wrote, int timeout = 100);
+		int bulkWrite(unsigned char *message, int size, int &wrote, unsigned int timeout = 100);
 
 		/**
 		 * @brief Bulk read
 		 *
 		 * This method performs a bulk transfer from the endpoint.
 		 *
-		 * \param length is the maximum data transfer required.
-		 * \param message is the message that was received.
-		 * \param timeout is the USB transaction timeout in milliseconds
+		 * @param length is the maximum data transfer required.
+		 * @param message is the message that was received.
+		 * @param read is the number of bytes which where received.
+		 * @param timeout is the USB transaction timeout in milliseconds
 		 *
-		 * \returns the number of bytes received, or a negative value on
+		 * @return the number of bytes received, or a negative value on
 		 * failure
 		 */
-		int bulkRead(int length, unsigned char *message, int size, int &read, int timeout = 100);
+		int bulkRead(unsigned int length, unsigned char *message, int &read, int timeout = 100);
 
 		/**
 		 * @brief Reset endpoint
@@ -82,6 +86,8 @@ namespace DANGER_ZONE {
 		 * It is mostly useful for debugging.
 		 */
 		void dumpDescriptor(void) const;
+
+		const libusb_endpoint_descriptor& endpointDescriptor();
 
 		private:
 		libusb_endpoint_descriptor m_endpoint_descriptor;
@@ -126,7 +132,7 @@ namespace DANGER_ZONE {
 	 * Interfaces are the main element of the USB class
 	 * structure.
 	 *
-	 * \author Brad Hards
+	 * @author Brad Hards
 	 */
 	class Interface: public std::list<AltSetting *> {
 		public:
@@ -141,7 +147,7 @@ namespace DANGER_ZONE {
 		 * interface before performing any operations on the interface (or
 		 * on endpoints that are part of the interface).
 		 *
-		 * \return 0 on success or negative number on error.
+		 * @return 0 on success or negative number on error.
 		 */
 		int claim(void);
 
@@ -152,7 +158,7 @@ namespace DANGER_ZONE {
 		 * interface after all operations on it (and any lower level
 		 * endpoints) are completed.
 		 *
-		 * \return 0 on success or negative number on error.
+		 * @return 0 on success or negative number on error.
 		 */
 		int release(void);
 
@@ -161,10 +167,10 @@ namespace DANGER_ZONE {
 		 *
 		 * This method sets the interface to a particular AltSetting.
 		 *
-		 * \param altSettingNumber the AltSetting that the interface
+		 * @param altSettingNumber the AltSetting that the interface
 		 * should be changed to.
 		 *
-		 * \return 0 on success, or a negative number in case of error.
+		 * @return 0 on success, or a negative number in case of error.
 		 */
 		int setAltSetting(int altSettingNumber);
 
@@ -215,7 +221,7 @@ namespace DANGER_ZONE {
 		 *   }
 		 *   this_Configuration = device->nextConfiguration();
 		 * }
-		 * \endcode
+		 * @endcode
 		 *
 		 * @see firstAltSetting(), lastAltSetting(), numAltSettings()
 		 */
@@ -248,7 +254,7 @@ namespace DANGER_ZONE {
 	 * The Configuration class represents a single configuration
 	 * of a device attached to a Universal Serial Bus.
 	 *
-	 * \author Brad Hards
+	 * @author Brad Hards
 	 */
 	class Configuration: public std::list<Interface *> {
 		public:
@@ -306,7 +312,7 @@ namespace DANGER_ZONE {
 		 *   }
 		 *   this_Configuration->nextConfiguration();
 		 * }
-		 * \endcode
+		 * @endcode
 		 *
 		 * @see firstInterface(), lastInterface(), numInterfaces()
 		 */
@@ -334,7 +340,7 @@ namespace DANGER_ZONE {
 	 * The Device class represents a single device
 	 * attached to a Universal Serial Bus.
 	 *
-	 * \author Brad Hards
+	 * @author Brad Hards
 	 */
 	class Device: public std::list<Configuration *> {
 		public:
@@ -427,13 +433,13 @@ namespace DANGER_ZONE {
 		/**
 		 * @brief fetch an arbitrary string from the device
 		 *
-		 * \param string the string from the device. You can typically
+		 * @param string the string from the device. You can typically
 		 * pass in an empty string for this.
-		 * \param index the index of the string required
-		 * \param lang the language ID to use. Defaults to using the
+		 * @param index the index of the string required
+		 * @param lang the language ID to use. Defaults to using the
 		 * first language ID.
 		 *
-		 * \return length of string, or 0 on error.
+		 * @return length of string, or 0 on error.
 		 */
 		int string(std::string &buf, int index, u_int16_t lang = 0);
 
@@ -463,7 +469,7 @@ namespace DANGER_ZONE {
 		 *   // do something with this_Configuration
 		 *   this_Configuration->nextConfiguration();
 		 * }
-		 * \endcode
+		 * @endcode
 		 */
 		Configuration *nextConfiguration(void);
 
@@ -482,19 +488,19 @@ namespace DANGER_ZONE {
 		 * This method performs a standard control transfer to the default
 		 * endpoint. See the USB specification for more details on this.
 		 *
-		 * \param requestType corresponds to the bmRequestType field
+		 * @param requestType corresponds to the bmRequestType field
 		 * in the transfer
-		 * \param request corresponds to the bRequest field in the
+		 * @param request corresponds to the bRequest field in the
 		 * transfer
-		 * \param value corresponds to the wValue field in the transfer
-		 * \param index corresponds to the wIndex field in the transfer
-		 * \param length corresponds to the wLength field in the transfer
-		 * \param payload corresponds to the data phase of a control
+		 * @param value corresponds to the wValue field in the transfer
+		 * @param index corresponds to the wIndex field in the transfer
+		 * @param length corresponds to the wLength field in the transfer
+		 * @param payload corresponds to the data phase of a control
 		 * transfer
-		 * \param timeout is the timeout period for the control transfer,
+		 * @param timeout is the timeout period for the control transfer,
 		 * in milliseconds
 		 *
-		 * \return number of bytes sent or received, or a negative number
+		 * @return number of bytes sent or received, or a negative number
 		 * in case of error.
 		 */
 		int controlTransfer(u_int8_t requestType, u_int8_t request,
@@ -507,7 +513,7 @@ namespace DANGER_ZONE {
 		 * This method performs a device reset - see USB Specification
 		 * 9.1 for how this changes the device state to the Default state.
 		 *
-		 * \return 0 on success, or a negative number in case of error.
+		 * @return 0 on success, or a negative number in case of error.
 		 */
 		int reset(void);
 
@@ -516,10 +522,10 @@ namespace DANGER_ZONE {
 		 *
 		 * This method sets the device to a particular Configuration.
 		 *
-		 * \param configurationNumber the configuration that the device
+		 * @param configurationNumber the configuration that the device
 		 * should be changed to.
 		 *
-		 * \return 0 on success, or a negative number in case of error.
+		 * @return 0 on success, or a negative number in case of error.
 		 */
 		int setConfiguration(int configurationNumber);
 
@@ -594,8 +600,8 @@ namespace DANGER_ZONE {
 		 * This constructor takes (vendor, product) tuple, which are
 		 * stored away.
 		 *
-		 * \param vendor the 16 bit vendor number for the device
-		 * \param product the 16 bit product number for the device
+		 * @param vendor the 16 bit vendor number for the device
+		 * @param product the 16 bit product number for the device
 		 */
 		DeviceID(u_int16_t vendor, u_int16_t product);
 
@@ -684,7 +690,7 @@ namespace DANGER_ZONE {
 		 *     // do something with each mouse that matched
 		 * }
 		 * FIXME: This is incorrect now
-		 * \endcode
+		 * @endcode
 		 */
 		std::list<Device *> match(DeviceIDList);
 
@@ -694,9 +700,13 @@ namespace DANGER_ZONE {
 		libusb_context *ctx;
 	};
 
-	class Error {
+	class USBError: public std::exception {
 		public:
+			USBError(const char *message);
+			virtual const char* what() const throw();
+			virtual ~USBError() throw ();
 		private:
+			char *message;
 	};
 
 }
