@@ -22,4 +22,4 @@ Todo
 * performance has to improve
 * should work with other resolutions than 24bpp
 * a GUI would be nice
-* ...
+* mouse pointer does not show up on the beamer
