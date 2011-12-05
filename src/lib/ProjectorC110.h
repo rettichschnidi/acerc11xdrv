@@ -19,10 +19,10 @@ namespace acerc11xdrv {
 	/**
 	 * Projector class which supports the Acer C110
 	 */
-	typedef Projector<ImageMagickUSBData, Magick::Geometry, Magick::FilterTypes, Magick::Image> ProjectorC110BaseProjector;
+	typedef Projector<ImageMagickUSBData, Magick::Geometry, Magick::FilterTypes, Magick::Image>
+			ProjectorC110BaseProjector;
 
 	class ProjectorC110: public ProjectorC110BaseProjector {
-
 		public:
 			ProjectorC110();
 

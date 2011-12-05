@@ -28,7 +28,7 @@ namespace acerc11xdrv {
 			typedef ImageType Image;
 			typedef boost::shared_ptr<ImageType> SpImage;
 
-			Projector();
+			Projector(Filters resizeFilterType);
 			virtual ~Projector();
 			void run();
 			void setBrightness(Brightness level);
@@ -66,11 +66,11 @@ namespace acerc11xdrv {
 			void writePicture();
 			void setResizeFilter(Filters filterType);
 
-			Geometry current_resolution;
-			unsigned int desired_frames_per_second;
-			unsigned int bits_per_pixel;
-			Brightness current_brightness;
-			FrameCounter frame_counter;
+			Geometry currentResolution;
+			unsigned int desiredFramesPerSecond;
+			unsigned int bitsPerPixel;
+			Brightness currentBrightness;
+			FrameCounter frameCounter;
 	};
 }
 

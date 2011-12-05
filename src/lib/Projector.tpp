@@ -17,10 +17,10 @@ namespace acerc11xdrv {
 	 * Default constructor for Projector. Subtype this class for concrete devices.
 	 */
 	template<typename ImageProcessorType, typename GeometryType, typename FilterType, typename ImageType>
-	Projector<ImageProcessorType, GeometryType, FilterType, ImageType>::Projector() :
-		max_resolution("800x480"), max_filesize(240000), vendorID(0), productID(0), current_resolution(max_resolution),
-				desired_frames_per_second(60), bits_per_pixel(24), current_brightness(BrightnessWidgetUSBData::HIGH) {
-		current_brightness = BrightnessWidgetUSBData::MEDIUM;
+	Projector<ImageProcessorType, GeometryType, FilterType, ImageType>::Projector(Filters resizeFilterType) :
+		max_resolution("800x480"), max_filesize(240000), resizeFilterType(resizeFilterType), vendorID(0), productID(0), currentResolution(max_resolution),
+				desiredFramesPerSecond(60), bitsPerPixel(24), currentBrightness(BrightnessWidgetUSBData::HIGH) {
+		currentBrightness = BrightnessWidgetUSBData::MEDIUM;
 	}
 
 	/**
@@ -76,12 +76,12 @@ namespace acerc11xdrv {
 	void Projector<ImageProcessorType, GeometryType, FilterType, ImageType>::run() {
 		refreshPicture();
 		writePicture();
-		frame_counter.update();
+		frameCounter.update();
 	}
 
 	template<typename ImageProcessorType, typename GeometryType, typename FilterType, typename ImageType>
 	FrameCounter::TimeDuration Projector<ImageProcessorType, GeometryType, FilterType, ImageType>::getDurationPerFrame() {
-		return frame_counter.getDurationPerFrame();
+		return frameCounter.getDurationPerFrame();
 	}
 
 	/**
@@ -93,7 +93,7 @@ namespace acerc11xdrv {
 		if (imageData.use_count() == 0) {
 			SpImage image = screenshotImport->getImage();
 			imageData = SpImageProcessor(
-					new ImageProcessor(image, current_resolution, resizeFilterType));
+					new ImageProcessor(image, currentResolution, resizeFilterType));
 		} else {
 			SpImage image = screenshotImport->getImage();
 			imageData->updateImage(image);
@@ -125,8 +125,8 @@ namespace acerc11xdrv {
 	 */
 	template<typename ImageProcessorType, typename GeometryType, typename FilterType, typename ImageType>
 	void Projector<ImageProcessorType, GeometryType, FilterType, ImageType>::setBrightness(Projector::Brightness level) {
-		current_brightness = level;
-		BrightnessWidgetUSBData widget(current_brightness);
+		currentBrightness = level;
+		BrightnessWidgetUSBData widget(currentBrightness);
 		int written;
 		int retvalue = endPoint->bulkWrite((unsigned char*) widget.getDataAsCharArray().get(), (int) widget.getSize(),
 				written); //FIXME: errorhandling
@@ -141,7 +141,7 @@ namespace acerc11xdrv {
 	 */
 	template<typename ImageProcessorType, typename GeometryType, typename FilterType, typename ImageType>
 	BrightnessWidgetUSBData::Brightness Projector<ImageProcessorType, GeometryType, FilterType, ImageType>::getBrightness() const {
-		return current_brightness;
+		return currentBrightness;
 	}
 
 	/**

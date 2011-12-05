@@ -19,7 +19,7 @@ namespace acerc11xdrv {
 	/**
 	 * Default constructor for ProjectorC110.
 	 */
-	ProjectorC110::ProjectorC110() {
+	ProjectorC110::ProjectorC110() : ProjectorC110BaseProjector(Magick::BoxFilter) {
 		vendorID = 0x1de1;
 		productID = 0xc101;
 		initUSBSubsystem();
