@@ -20,11 +20,9 @@ SET(CORE_CPPFILES
 SET(CORE_LIBS ${LIBUSB_LIBRARIES} ${Boost_LIBRARIES} ${ImageMagick_LIBRARIES} ${X11_LIBRARIES})
 INCLUDE_DIRECTORIES(${LIBUSB_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${ImageMagick_INCLUDE_DIRS} ${X11_INCLUDE_DIR})
 
-#add our own headers plus the configured ones to the include path
+#add configured files to the include path
 INCLUDE_DIRECTORIES(
 	"${PROJECT_BINARY_DIR}/configured_files/"
-	"${PROJECT_SOURCE_DIR}/src/"
-	"${PROJECT_SOURCE_DIR}/src/lib/"
 )
 
 #create one library so we do not have to compile n * CORE_CPPFILES
