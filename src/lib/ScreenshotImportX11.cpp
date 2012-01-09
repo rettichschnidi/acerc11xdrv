@@ -79,19 +79,18 @@ namespace acerc11xdrv {
 
 		int calculated_offset;
 		for (int y = 0; y < image->height; y++) {
-			offset = image->bytes_per_line * y;
 			for (int x = 0; x < image->width; x++) {
 				// FIXME: 	breaks on many systems?
-				//			slow
-				//			ugly
 				calculated_offset = offset + x * 4;
-				pixel = pixel_cache + y * dx + x;
+				pixel = pixel_cache + x;
 				//				RGB_IN(pixel->red, pixel->green, pixel->blue, image->data[calculated_offset]);
 				unsigned int v = ((uint32_t *) (image->data + calculated_offset))[0];
 				pixel->red = (v >> 8) & 0xffff;
 				pixel->green = (v) & 0xffff;
 				pixel->blue = (v << 8) & 0xffff;
 			}
+			pixel_cache += dx;
+			offset += image->bytes_per_line;
 		}
 		magickImage->syncPixels();
 		return magickImage;
