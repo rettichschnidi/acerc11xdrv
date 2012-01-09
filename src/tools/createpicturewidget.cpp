@@ -1,9 +1,9 @@
 /**
  * @file createpicturewidget.cpp
  */
-#include "util.h"
-#include "USBData.h"
-#include "Exception.h"
+#include "../lib/util.h"
+#include "../lib/USBData.h"
+#include "../lib/Exception.h"
 
 #include <fstream>
 #include <string>

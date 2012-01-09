@@ -1,6 +1,6 @@
-#include "ProjectorC110.h"
-#include "USB.h"
-#include "Exception.h"
+#include "../lib/ProjectorC110.h"
+#include "../lib/USB.h"
+#include "../lib/Exception.h"
 
 #include <iostream>
 #include <string>
