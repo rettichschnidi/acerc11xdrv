@@ -9,7 +9,7 @@
 #include "ide_listener.h"
 #include "cute_runner.h"
 
-#include "testing_helper.h"
+#include <testing_helper.h>
 #include "USBData.h"
 
 using namespace acerc11xdrv;
