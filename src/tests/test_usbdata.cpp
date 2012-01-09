@@ -10,7 +10,7 @@
 #include "cute_runner.h"
 
 #include <testing_helper.h>
-#include "USBData.h"
+#include "../lib/USBData.h"
 
 using namespace acerc11xdrv;
 
