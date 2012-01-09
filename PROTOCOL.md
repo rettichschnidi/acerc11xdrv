@@ -52,6 +52,7 @@ In front of every picture there is a simple 24 byte long widget:
 
 Where XXYYZZ represents the size of the following JPEG image. The byte order is little endian.
 W2W1 represents the width, H2H1 the height of the image (thanks Antonio). Again, little endian.
+The first byte (0x02) tells us that this is an image widget.
 
 Example: 
 A JPEG has a size of 59475 bytes (0xE853 in hex), the resolution is 800x480 (0x0320 and 0x01E0).
@@ -78,6 +79,7 @@ The restrictions are:
 Special Header
 --------------
 Between any frame can be a special widget, which changes the brightness of the device.
+The first byte (0x04) tells us that this is a brightness widget.
 
 maximum:
 
