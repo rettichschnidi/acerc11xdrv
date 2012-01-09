@@ -8,7 +8,7 @@
 #include <cassert>
 #include <boost/program_options.hpp>
 
-#include "USB.h"
+#include "../lib/USB.h"
 
 using namespace std;
 using namespace DANGER_ZONE;

@@ -1,12 +1,12 @@
 /**
  * @file getScreenshot.cpp
  **/
-#include "ScreenshotImportX11.h"
-#include "ImageMagickUSBData.h"
-#include "util.h"
-#include "USBData.h"
-#include "USB.h"
-#include "Exception.h"
+#include "../lib/ScreenshotImportX11.h"
+#include "../lib/ImageMagickUSBData.h"
+#include "../lib/util.h"
+#include "../lib/USBData.h"
+#include "../lib/USB.h"
+#include "../lib/Exception.h"
 
 #include <iostream>
 #include <string>
