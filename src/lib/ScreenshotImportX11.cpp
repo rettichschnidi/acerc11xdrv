@@ -70,26 +70,26 @@ namespace acerc11xdrv {
 		}
 		SpImage magickImage = SpImage(new Image(Geometry(image->width, image->height), "White"));
 		int x = 0, y = 0, dx = image->width, dy = image->height;
-		int offset;
+		int offset = 0;
 		PixelPacket *pixel;
 
 		magickImage->modifyImage();
 		pixel = magickImage->getPixels(x, y, dx, dy);
 
-		int calculated_offset;
+		int calculated_offset = 0;
+		unsigned int v = 0;
 		for (int y = 0; y < image->height; y++) {
+			calculated_offset = offset;
+			offset += image->bytes_per_line;
 			for (int x = 0; x < image->width; x++) {
 				// FIXME: 	breaks on many systems?
-				calculated_offset = offset + x * 4;
-				//				RGB_IN(pixel->red, pixel->green, pixel->blue, image->data[calculated_offset]);
-				unsigned int v = ((uint32_t *) (image->data + calculated_offset))[0];
+				calculated_offset += 4;
+				v = *((uint32_t *) (image->data + calculated_offset));
 				pixel->red = (v >> 8) & 0xffff;
 				pixel->green = (v) & 0xffff;
 				pixel->blue = (v << 8) & 0xffff;
 				pixel++;
 			}
-			pixel += dx;
-			offset += image->bytes_per_line;
 		}
 		magickImage->syncPixels();
 		return magickImage;
