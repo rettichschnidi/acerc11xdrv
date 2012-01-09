@@ -55,7 +55,7 @@ namespace acerc11xdrv {
 		image = XGetImage(display, RootWindow(display, DefaultScreen(display)), 0, 0,
 				DisplayWidth(display, DefaultScreen(display)), DisplayHeight(display, DefaultScreen(display)),
 				AllPlanes, ZPixmap);
-		if (image == NULL) {
+		if (!image) {
 			throw Exception("Could not get a screenshot with XGetImage()");
 		}
 	}
@@ -65,31 +65,30 @@ namespace acerc11xdrv {
 	 * @return imagemagick/Magick++ image
 	 */
 	ScreenshotImportX11::SpImage ScreenshotImportX11::getImage() {
-		if (image == NULL) {
+		if (!image) {
 			updateScreenshot();
 		}
 		SpImage magickImage = SpImage(new Image(Geometry(image->width, image->height), "White"));
 		int x = 0, y = 0, dx = image->width, dy = image->height;
 		int offset;
 		PixelPacket *pixel;
-		PixelPacket *pixel_cache;
 
 		magickImage->modifyImage();
-		pixel_cache = magickImage->getPixels(x, y, dx, dy);
+		pixel = magickImage->getPixels(x, y, dx, dy);
 
 		int calculated_offset;
 		for (int y = 0; y < image->height; y++) {
 			for (int x = 0; x < image->width; x++) {
 				// FIXME: 	breaks on many systems?
 				calculated_offset = offset + x * 4;
-				pixel = pixel_cache + x;
 				//				RGB_IN(pixel->red, pixel->green, pixel->blue, image->data[calculated_offset]);
 				unsigned int v = ((uint32_t *) (image->data + calculated_offset))[0];
 				pixel->red = (v >> 8) & 0xffff;
 				pixel->green = (v) & 0xffff;
 				pixel->blue = (v << 8) & 0xffff;
+				pixel++;
 			}
-			pixel_cache += dx;
+			pixel += dx;
 			offset += image->bytes_per_line;
 		}
 		magickImage->syncPixels();
