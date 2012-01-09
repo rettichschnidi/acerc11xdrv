@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
 				("nowrite,w", "Do not write out the screenshot.")
 				("inmemoryencoding,n", "Encode image in memory. Does not apply if image gets written to disc.")
 				("dobenchmark,b", "Test default imagefilter and print out much time it requires.")
-				("dofullbenchmark,bf", "Test all available imagefilters and print out how much time each requires.")
+				("dofullbenchmark", "Test all available imagefilters and print out how much time each requires.")
 				("help,h","Shows this information");
 
 		boost::program_options::positional_options_description posOpt;
