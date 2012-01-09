@@ -47,15 +47,17 @@ Header/Widget
 In front of every picture there is a simple 24 byte long widget:
 
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	+02|00|00|00|00|10|3e|10|01|00|00|00|20|03|00|00|e0|01|00|00|XX|YY|ZZ|00+
+	+02|00|00|00|00|10|3E|10|01|00|00|00|W2|W1|00|00|H2|H1|00|00|XX|YY|ZZ|00+
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 Where XXYYZZ represents the size of the following JPEG image. The byte order is little endian.
+W2W1 represents the width, H2H1 the height of the image (thanks Antonio). Again, little endian.
 
-Example: A JPEG has the size of 59475 bytes which is 0xE853 in hex.
+Example: 
+A JPEG has a size of 59475 bytes (0xE853 in hex), the resolution is 800x480 (0x0320 and 0x01E0).
 
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	+02|00|00|00|00|10|3e|10|01|00|00|00|20|03|00|00|e0|01|00|00|53|E8|00|00+
+	+02|00|00|00|00|10|3E|10|01|00|00|00|20|03|00|00|E0|01|00|00|53|E8|00|00+
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 Payload/Picture
@@ -65,9 +67,11 @@ Right after the widget the JPEG encoded picture follows.
 The restrictions are:
 
 * JFIF standard 1.01
-* 800x480 resolution
-* smaller resolutions work, but will clear the old picture just partially
-* bigger resolutions will crash the device
+* resolutions between 800x480 and about 200x150 (known to work)
+* resolution of 150x150 does not work
+* resolution of 854x480 should work
+* Setting a bigger resolution than the file that follows actually has, creates the effect that just the middle of the screen gets updated. Anything around keeps the content of the old picture.
+* bigger resolutions than 854x480 will crash the device
 * max filesize is about 245000 bytes
 
 
