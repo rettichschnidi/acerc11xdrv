@@ -21,11 +21,11 @@ When plugged in, the C110 registers itself as mass storage device with the follo
 
 Under Windows the user can install this drivers at this point.
 
-The presented USB id is: 1de1:1101
+The presented USB id in this mode is: 1de1:1101
 
 Change To Beamer Mode
 =====================
-Under Windows the driver will send a special command to the C110 when it registers itself as mass storage device. The C110 will then change to the "beamer" mode.
+Under Windows the driver will send a special command to the projector when it registers itself as mass storage device. The projector will then change to the "beamer" mode.
 
 Under Linux we can achieve this with the following command (usb_modeswitch required, current version of usb_modeswitch already comes with this udev-rule):
 
@@ -37,12 +37,12 @@ Under Linux we can achieve this with the following command (usb_modeswitch requi
 "Beamer" mode
 =============
 
-The presented USB id is: 1de1:c101
+The presented USB id in this mode is: 1de1:c101
 
-The C110 uses a fairly simple protocol. Per frame there is a picture (JPEG or YUV) with its 24 bytes long header, which we call widget.
+The C110 uses a fairly simple protocol. Per frame there is a picture (payload, JPEG or YUV) which is lead by a 24 bytes long header, call widget from now on.
 
 Header/Widget
-------
+-------------
 
 In front of every picture there is a simple 24 byte long widget:
 
@@ -85,12 +85,26 @@ The restrictions for JPEG pictures are:
 The restrictions for YUV pictures are:
 
 * NV12 encodingt - have a look at this link: http://www.fourcc.org/yuv.php#NV12
-* resolutions between 800x480 and about 200x150 (known to work)
-* resolutions of 150x150 and smaller do not work and creates funky colors (tested)
-* bigger resolutions than 800x480 creates funky colors
+* there is no scaling - if you want to use the full screen, provide a 800x480 pic
+* Width has to be between 200 and 800pixels  - smaller and greater values will create a garbled pic
+* Height has to be between 3 and 480pixesl - smaller values will create a garbled pic, greater ones will be cut off the screen
 
-Special Header
---------------
+Special Headers
+---------------
+
+Info
+----
+At the first connection, the beamer sends an packet with information about his abilities.
+
+	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	+01|00|00|00|01|10|00|00|W0|W1|W2|W3|H0|H1|H2|H3|00|00|00|00|03|00|00|00|
+	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	
+The first byte (0x01) tells us that this is an info widget.
+W0W1W2W3 represents the max. width, H0H1H2H3 the max. height of the image. Again, little endian.
+
+Brightness
+---------------
 Between any frame can be a special widget, which changes the brightness of the device.
 The first byte (0x04) tells us that this is a brightness widget.
 
