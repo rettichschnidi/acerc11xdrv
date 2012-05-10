@@ -1,25 +1,9 @@
 About acerc11xdrv
 =================
-This project provides a Linux driver for the Acer C110 pico projector.
+The aim of this project was to reverse engineer the protocol of the
+Acer C110 pico projector and to deliver a Linux driver. 
 
-USB id:
+However, the driver was never more than a prototype and based on the
+published format, Antonio Ospite wrote a driver, which is superior in
+any way: http://git.ao2.it/libam7xxx.git/
 
-* 1de1:1101 (c110, when in mass storage mode)
-* 1de1:c101 (c110, when in projector mode)
-
-Requirements
-============
-
-* libusb-1.0
-* Magick++ 
-* boost 1.44+
-* CMake 2.8
-* Doxygen (optional, to generate the documentation)
-
-Todo
-====
-
-* performance has to improve
-* should work with other resolutions than 24bpp
-* a GUI would be nice
-* mouse pointer does not show up on the beamer
